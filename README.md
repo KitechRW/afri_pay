@@ -11,10 +11,10 @@ Afripay uses a **form-submission checkout model** combined with asynchronous **s
 To implement this integration, you need:
 1.  **Afripay Account(Business):**
    - `https://www.afripay.africa/`
-1. **Afripay Credentials:**
+2. **Afripay Credentials:**
    - `APP_ID`: Your unique Afripay application ID.
    - `APP_SECRET`: Your unique Afripay application secret.
-2. **Public Webhook URL:** A publicly accessible domain to receive POST callbacks from Afripay. **Note:** You must explicitly share this callback URL with the Afripay support team so they can configure it on their end.
+3. **Public Webhook URL:** A publicly accessible domain to receive POST callbacks from Afripay. **Note:** You must explicitly share this callback URL with the Afripay support team so they can configure it on their end.
 
 *(Note: If you are using WordPress, Afripay also offers a WooCommerce plugin for 100K RWF, which bypasses the need for custom integration.)*
 
