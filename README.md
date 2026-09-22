@@ -39,11 +39,62 @@ AFRIPAY_APP_SECRET=your_afripay_app_secret
 
 ## High-Level Architecture Flow
 
-1. **Initiate Payment (Backend):** Your client requests to pay for a product/service. Your backend creates a `pending` payment record in your database and generates a unique order reference (`client_token`).
-2. **Checkout Redirect (Frontend):** The backend responds with form data. The client creates a hidden HTML form and POSTs it to the Afripay checkout URL.
-3. **User Pays (Afripay):** The user enters their payment details on the secure Afripay page.
-4. **Return URL (Frontend/Backend):** After payment, Afripay redirects the user back to your site via the provided `return_url`. Your frontend polls your backend to check if the payment is complete.
-5. **Webhook Confirmation (Backend):** Afripay asynchronously sends a POST request to your webhook endpoint. Your server validates the payload, updates the database, and provisions the user's purchase.
+AfriPay integration has two parts: **one-time setup** and the **payment transaction flow**.
+
+### A. One-Time Setup
+
+1. **Create an AfriPay Business Account:** Create an account and complete any verification required by AfriPay.
+2. **Prepare a Public Webhook URL:** Create a public HTTPS endpoint that will receive payment notifications.
+3. **Request Production Credentials:** Contact AfriPay to request your `APP_ID` and `APP_SECRET`, and provide the webhook/callback URL for registration.
+4. **Configure Your Application:** Store the credentials securely in server-side environment variables and configure the payment integration.
+
+See [Getting Started](docs/getting-started.md) and [Account and Credentials](docs/account-and-credentials.md) for the complete setup process.
+
+### B. Payment Transaction Flow
+
+1. **Initiate Payment (Backend):** When a user starts a payment, your backend creates a `pending` payment record and generates a unique transaction reference (`client_token`).
+2. **Submit to AfriPay Checkout:** Your application submits the required payment fields to the AfriPay checkout URL using an HTTP POST form.
+3. **User Completes Payment:** The user completes the payment on AfriPay's checkout page.
+4. **Return to Application:** AfriPay redirects the user to the configured `return_url`. This return is for user experience only and must not be treated as proof of payment.
+5. **Webhook Confirmation:** AfriPay sends a server-to-server callback to the registered webhook URL. Your backend uses `client_token` to locate the local transaction, processes the payment result idempotently, and updates its status.
+6. **Confirm Status to User:** Because the webhook may arrive shortly after the browser returns, the return page can poll your backend until the transaction reaches a final state such as `success` or `failed`.
+
+### Flow Summary
+
+```text
+One-Time Setup
+AfriPay Account
+      ↓
+Account Verification
+      ↓
+Public Webhook URL
+      ↓
+APP_ID + APP_SECRET
+      ↓
+Callback Registration
+      ↓
+Application Configuration
+
+Payment Flow
+User Starts Payment
+      ↓
+Create Pending Transaction + client_token
+      ↓
+POST to AfriPay Checkout
+      ↓
+User Completes Payment
+      ↓
+┌──────────────────────┬────────────────────────┐
+│ Browser Return       │ Server Webhook         │
+│ (user experience)    │ (payment confirmation) │
+└──────────┬───────────┴────────────┬───────────┘
+           │                        │
+           │              Update Transaction
+           │                        │
+           └────────────┬───────────┘
+                        ↓
+               Display Final Status
+```
 
 ---
 
