@@ -1,5 +1,16 @@
 # Afripay Payment Integration Guide
 
+> A public, platform-agnostic reference for integrating AfriPay payments into web applications.
+
+## Documentation
+
+- [Getting Started](docs/getting-started.md) — account setup and the full integration lifecycle
+- [Account and Credentials](docs/account-and-credentials.md) — production credentials and callback registration
+- [Webhooks](docs/webhooks.md) — payment confirmation and webhook responsibilities
+- [Production Checklist](docs/production-checklist.md) — go-live verification
+- [Troubleshooting](docs/troubleshooting.md) — common integration problems
+- [Environment Example](.env.example) — required environment variables
+
 ## Overview
 
 This document provides a comprehensive, platform-agnostic guide for integrating Afripay into any web application. It serves as a definitive reference for how to structure your payment initialization, client redirection, return URL handling, and webhook confirmation.
